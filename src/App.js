@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Route, Switch } from 'react-router-dom'
+import { Auth } from './pages/Auth'
+import { Profile } from './pages/Profile'
+import { Navbar } from './components/structural/Navbar'
+import { Logger } from './helpers/Logger'
+import { LoggerProvider } from './providers/logger'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCoffee, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { EventsPage } from './pages/Events'
+
+library.add(faCoffee, faTimes)
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<LoggerProvider>
+			<div className="App">
+				<Navbar list={['/', 'auth', 'profile', 'events']} />
+				<main>
+					<Switch>
+						<Route exact path="/">
+							<h1>Hello, world!</h1>
+						</Route>
+						<Route path="/auth" component={Auth} />
+						<Route path="/profile" component={Profile} />
+						<Route path="/events" component={EventsPage} />
+						<Route path="*">404</Route>
+					</Switch>
+				</main>
+				<footer />
+
+				<Logger />
+			</div>
+		</LoggerProvider>
+	)
 }
 
-export default App;
+export default App
