@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import './style.scss'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const onReadHandler = (setState, id, remove) => {
 	setState(true)
@@ -31,7 +30,7 @@ function LoggerItem({ log, id, remove }) {
 	return (
 		<li
 			className={
-				`logger__item ` +
+				'logger__item ' +
 				(isVisible ? ' logger__item--visible' : '') +
 				(readed ? ' logger__item--readed' : '')
 			}
@@ -43,14 +42,14 @@ function LoggerItem({ log, id, remove }) {
 					type="button"
 					onClick={onReadHandler.bind(null, setReaded, log.id, remove)}
 				>
-					<FontAwesomeIcon icon="times" />
+					{/* <FontAwesomeIcon icon="times" /> */}
 				</button>
 			</div>
 			{readed && (
 				<div className="logger__content logger__content--hide">
 					<span>{log.message}</span>
 					<button type="button" disabled>
-						<FontAwesomeIcon icon="times" />
+						{/* <FontAwesomeIcon icon="times" /> */}
 					</button>
 				</div>
 			)}

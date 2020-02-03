@@ -5,12 +5,7 @@ import { Profile } from './pages/Profile'
 import { Navbar } from './components/structural/Navbar'
 import { Logger } from './helpers/Logger'
 import { LoggerProvider } from './providers/logger'
-
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCoffee, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { EventsPage } from './pages/Events'
-
-library.add(faCoffee, faTimes)
 
 function App() {
 	return (

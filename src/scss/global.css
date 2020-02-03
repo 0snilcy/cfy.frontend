@@ -1,14 +1,3 @@
-:root {
-	--color-white: #fff;
-	--color-gray: hsl(0, 0%, 17%);
-	--color-light-gray: hsl(0, 0%, 37%);
-
-	--color-primary: #3988f2;
-	--color-primary-second: #ea4c88;
-
-	--multi: 3px;
-}
-
 html {
 	font-size: var(--multi);
 }
@@ -39,6 +28,7 @@ button {
 	border: none;
 	cursor: pointer;
 	color: inherit;
+	background: none;
 }
 
 a {
