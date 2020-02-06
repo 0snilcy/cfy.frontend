@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Logger } from 'helpers/Logger'
 import uuid from 'uuid/v4'
+import PropTypes from 'prop-types'
 
 export const LoggerContext = React.createContext({})
 
@@ -54,4 +55,8 @@ export class LoggerProvider extends Component {
 			</LoggerContext.Provider>
 		)
 	}
+}
+
+LoggerProvider.propTypes = {
+	children: PropTypes.node,
 }

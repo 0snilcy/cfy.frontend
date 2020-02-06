@@ -6,16 +6,19 @@ class Geo {
 			lat,
 			lon: lng,
 		})
-		const data = await fetch(
+		let responce = await fetch(
 			'http://whatsthere.maps.sputnik.ru/point?' + params,
 			{
 				method: 'GET',
 			}
 		)
 
-		const response = await data.json()
-
-		return response.result.address[0].features[0].properties.display_name
+		if (responce.ok) {
+			responce = await responce.json()
+			return responce.result.address[0].features[0].properties.display_name
+		} else {
+			console.log(responce.status, responce.statusText)
+		}
 	}
 
 	static async getCoordsByAddress(q) {

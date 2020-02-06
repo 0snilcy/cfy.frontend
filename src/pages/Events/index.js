@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import './style.scss'
 
-import Map from '../../components/shared/Map'
-import Modal from '../../helpers/Modal'
-import Geo from '../../services/geo.service'
+import Map from 'components/shared/Map'
+import Geo from 'services/geo.service'
 
 export class EventsPage extends Component {
 	constructor(props) {
@@ -29,6 +28,8 @@ export class EventsPage extends Component {
 		}, console.log)
 	}
 
+	componentWillUnmount() {}
+
 	async checkGeo(coords) {
 		const place = await Geo.getAddresByCoords(coords)
 		this.setState({
@@ -37,9 +38,20 @@ export class EventsPage extends Component {
 	}
 
 	async onChangeLocation({ target }) {
-		const city = await Geo.getCoordsByAddress(target.value)
-		console.log(city)
+		const { value } = target
+
+		if (value) {
+			const city = (await Geo.getCoordsByAddress(target.value)) || {}
+			if (city.result.address) {
+				const { features } = city.result.address[0]
+				this.setState({
+					citys: features,
+				})
+			}
+		}
 	}
+
+	onChangeLocationCb() {}
 
 	render() {
 		return (
@@ -47,17 +59,6 @@ export class EventsPage extends Component {
 				<h2>События</h2>
 				<input type="text" placeholder="Город" />
 				<Map {...this.state.map} />
-				{this.state.place && (
-					<Modal title="Выберете город" footer>
-						<div>
-							Вы находитесь:&nbsp; <strong>{this.state.place}?</strong>
-						</div>
-						<div>
-							Укажите местоположение
-							<input onChange={this.onChangeLocation} type="text" />
-						</div>
-					</Modal>
-				)}
 			</section>
 		)
 	}

@@ -1,0 +1,18 @@
+.navbar {
+	border-bottom: 1px solid #000;
+
+	ul {
+		display: flex;
+	}
+
+	li {
+		margin-right: 5rem;
+	}
+
+	&__menu {
+		display: flex;
+		justify-content: space-between;
+
+		padding: 10rem;
+	}
+}
