@@ -1,26 +1,11 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './scss/style.scss'
+import './scss/style.sass'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { BrowserRouter } from 'react-router-dom'
-import { createStore } from 'redux'
-import { reducers } from './store/reducers'
 import { Provider } from 'react-redux'
-
-const store = createStore(
-	reducers,
-	{
-		city: {
-			title: 'Orel',
-			coords: {
-				lat: 50.1,
-				lng: 50.1,
-			},
-		},
-	},
-	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-)
+import { store } from 'store'
 
 ReactDOM.render(
 	<Provider store={store}>

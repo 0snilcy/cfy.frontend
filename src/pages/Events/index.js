@@ -1,20 +1,17 @@
 import React, { Component } from 'react'
-import './style.scss'
+import './style.sass'
 
 import Map from 'components/shared/Map'
 import Geo from 'services/geo.service'
+import { connect } from 'react-redux'
+import { getCity } from 'store/selectors'
+import PropTypes from 'prop-types'
 
-export class EventsPage extends Component {
+class EventsPage extends Component {
 	constructor(props) {
 		super(props)
-		this.state = {
-			map: {
-				lng: 50,
-				lat: 50,
-			},
-			place: null,
-		}
 	}
+
 	componentDidMount() {
 		navigator.geolocation.getCurrentPosition(({ coords }) => {
 			this.setState({
@@ -37,29 +34,25 @@ export class EventsPage extends Component {
 		})
 	}
 
-	async onChangeLocation({ target }) {
-		const { value } = target
-
-		if (value) {
-			const city = (await Geo.getCoordsByAddress(target.value)) || {}
-			if (city.result.address) {
-				const { features } = city.result.address[0]
-				this.setState({
-					citys: features,
-				})
-			}
-		}
-	}
-
-	onChangeLocationCb() {}
-
 	render() {
 		return (
 			<section className="events">
 				<h2>События</h2>
-				<input type="text" placeholder="Город" />
-				<Map {...this.state.map} />
+				<Map {...this.props.city.coords} />
 			</section>
 		)
 	}
 }
+
+EventsPage.propTypes = {
+	city: PropTypes.shape({
+		coords: PropTypes.shape({
+			lng: PropTypes.number,
+			lat: PropTypes.number,
+		}),
+	}),
+}
+
+export default connect(state => ({
+	city: getCity(state),
+}))(EventsPage)

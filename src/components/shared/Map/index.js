@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import DG from '2gis-maps'
 
-import './style.css'
+import './style.sass'
 
 class Map extends React.Component {
 	map = null
@@ -14,7 +14,7 @@ class Map extends React.Component {
 
 	componentDidMount() {
 		this.map = DG.map(this.mapRef.current, {
-			zoom: 10,
+			zoom: 13,
 		})
 	}
 

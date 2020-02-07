@@ -3,14 +3,15 @@ import { Route, Switch } from 'react-router-dom'
 import { Auth } from './pages/Auth'
 import { Profile } from './pages/Profile'
 import Navbar from './components/structural/Navbar'
-import { EventsPage } from './pages/Events'
+import EventsPage from './pages/Events'
 import ChangeCityModal from './helpers/Modals/changeCity'
 import { connect } from 'react-redux'
-import { getModal } from './store/selectors'
+import { getModal, getLogs } from './store/selectors'
 import { name as changeCity } from './helpers/Modals/changeCity'
 import PropTypes from 'prop-types'
+import Logger from './helpers/Logger'
 
-function App({ modal }) {
+function App({ modal, logs = [] }) {
 	return (
 		<div className="App">
 			<Navbar list={['/', 'auth', 'profile', 'events']} />
@@ -27,12 +28,17 @@ function App({ modal }) {
 			</main>
 			<footer />
 			{modal === changeCity && <ChangeCityModal />}
+			{!!logs.length && <Logger logs={logs} />}
 		</div>
 	)
 }
 
 App.propTypes = {
 	modal: PropTypes.string,
+	logs: PropTypes.array,
 }
 
-export default connect(state => ({ modal: getModal(state) }))(App)
+export default connect(state => ({
+	modal: getModal(state),
+	logs: getLogs(state),
+}))(App)

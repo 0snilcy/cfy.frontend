@@ -1,4 +1,5 @@
 import Action from './types'
+import uuid from 'uuid/v4'
 
 export const changeModal = name => {
 	return {
@@ -19,5 +20,20 @@ export const changeCity = (coords, title) => {
 		type: Action.CHANGE_CITY,
 		coords,
 		title,
+	}
+}
+
+export const addLog = message => {
+	return {
+		type: Action.ADD_LOG,
+		message,
+		id: uuid(),
+	}
+}
+
+export const removeLog = id => {
+	return {
+		type: Action.REMOVE_LOG,
+		id,
 	}
 }

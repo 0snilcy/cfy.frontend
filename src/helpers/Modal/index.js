@@ -1,5 +1,5 @@
 import React from 'react'
-import './style.scss'
+import './style.sass'
 
 import PropTypes from 'prop-types'
 import { Close } from 'icons'

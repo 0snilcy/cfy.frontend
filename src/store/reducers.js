@@ -17,6 +17,24 @@ export const reducers = (state = {}, action) => {
 				modal: action.name,
 			}
 
+		case Actions.ADD_LOG:
+			return {
+				...state,
+				logs: [
+					...state.logs,
+					{
+						message: action.message,
+						id: action.id,
+					},
+				],
+			}
+
+		case Actions.REMOVE_LOG:
+			return {
+				...state,
+				logs: state.logs.filter(({ id }) => id !== action.id),
+			}
+
 		default:
 			return state
 	}

@@ -1,10 +1,8 @@
-import { useState, useContext } from 'react'
-import { LoggerContext } from 'providers/logger'
+import { useState } from 'react'
 
 export const useHttp = () => {
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
-	const logger = useContext(LoggerContext)
 
 	const request = async (url, method, body = {}, headers = {}) => {
 		setLoading(true)
@@ -21,9 +19,12 @@ export const useHttp = () => {
 			})
 
 			const data = await response.json()
-			logger.add(data.message)
+			console.log(data.message)
+
+			// logger.add(data.message)
 		} catch (err) {
-			logger.add(err.message)
+			console.log(err.message)
+			// logger.add(err.message)
 		}
 
 		setLoading(false)
