@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './style.sass'
 
 import Map from 'components/shared/Map'
-import Geo from 'services/geo.service'
+import Geo from 'services/geo/geo.service'
 import { connect } from 'react-redux'
 import { getCity } from 'store/selectors'
 import PropTypes from 'prop-types'
@@ -12,18 +12,7 @@ class EventsPage extends Component {
 		super(props)
 	}
 
-	componentDidMount() {
-		navigator.geolocation.getCurrentPosition(({ coords }) => {
-			this.setState({
-				map: {
-					lng: coords.longitude,
-					lat: coords.latitude,
-				},
-			})
-
-			this.checkGeo(this.state.map)
-		}, console.log)
-	}
+	componentDidMount() {}
 
 	componentWillUnmount() {}
 

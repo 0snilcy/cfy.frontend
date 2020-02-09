@@ -4,8 +4,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { getCity } from 'store/selectors'
 import { closeModal, changeCity } from 'store/actions'
-import Geo from 'services/geo.service'
-import { debounce } from 'utils'
+import Geo from 'services/geo/geo.service'
+import { debounce } from 'utils/index'
 
 export const name = 'changeCity'
 

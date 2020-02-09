@@ -1,7 +1,7 @@
-export const debounce = (fn, time = 100, ctx = null) => {
-	let timer
+export const debounce = (fn: any, time = 100, ctx: any = null) => {
+	let timer: NodeJS.Timeout
 
-	return (...args) => {
+	return (...args: any[]) => {
 		clearTimeout(timer)
 
 		return new Promise(resolve => {
