@@ -5,10 +5,12 @@
 		"es6": true
 	},
 	"extends": [
+		"plugin:@typescript-eslint/eslint-recommended",
 		"plugin:@typescript-eslint/recommended",
-		"plugin:react/recommended"
+		"plugin:react/recommended",
+		"prettier/@typescript-eslint"
 	],
-	"plugins": ["prettier"],
+	"plugins": ["prettier", "@typescript-eslint"],
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly"
@@ -50,7 +52,8 @@
 			{
 				"argsIgnorePattern": "^_"
 			}
-		]
+		],
+		"@typescript-eslint/no-explicit-any": ["error", false]
 	},
 	"settings": {
 		"react": {

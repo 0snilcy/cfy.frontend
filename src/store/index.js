@@ -16,8 +16,7 @@ export const store = createStore(
 			},
 		},
 	},
-	(window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-		(window as any).__REDUX_DEVTOOLS_EXTENSION__()
+	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
 store.subscribe(debounce(() => setLocalState(store.getState()), 500))

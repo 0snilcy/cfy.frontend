@@ -42,7 +42,7 @@ class Geo {
 			lat,
 			lon: lng,
 		})
-		let response = await fetch(
+		const response = await fetch(
 			'http://whatsthere.maps.sputnik.ru/point?' + params,
 			{
 				method: 'GET',

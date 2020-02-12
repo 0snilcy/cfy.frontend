@@ -13,7 +13,7 @@ class Http {
 			.join('&')
 	}
 
-	async sendRequest(route: string, options: RequestInit) {
+	async sendRequest(route: string, options: RequestInit): Promise<any> {
 		let response
 		try {
 			response = await fetch(join(this.route, route), {
@@ -31,7 +31,7 @@ class Http {
 		return response?.status
 	}
 
-	async post(route: string, body: any) {
+	async post(route: string, body: BodyInit): Promise<any> {
 		if (!body) return
 
 		return await this.sendRequest(route, {
@@ -43,7 +43,7 @@ class Http {
 		})
 	}
 
-	async get(route: string) {
+	async get(route: string): Promise<any> {
 		return await this.sendRequest(route, {
 			method: 'GET',
 		})
