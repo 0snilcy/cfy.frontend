@@ -1,13 +1,14 @@
 import Http from 'services/http.service'
 import { store } from 'store/index'
 import { addLog } from 'store/actions'
-import { GeoResponse } from './response.model'
-import { PointType, Coordinate } from './geo.model'
 
-const http = new Http('geo')
+const PointType = {
+	Place: 'place',
+	Suburb: 'suburb',
+}
 
 class Geo {
-	getCitiesFromRespons(response: GeoResponse) {
+	getCitiesFromRespons(response) {
 		const { result } = response
 
 		const { address } = result
@@ -17,15 +18,15 @@ class Geo {
 		if (!features.length) return
 
 		const cities = features
-			.filter(({ properties }: any) =>
+			.filter(({ properties }) =>
 				[PointType.Place, PointType.Suburb].includes(properties.type)
 			)
-			.map(({ properties, geometry }: any) => {
+			.map(({ properties, geometry }) => {
 				const addressArr = properties.address_components
 
 				return {
 					type: properties.type,
-					title: addressArr.map(({ value }: any) => value).join(', '),
+					title: addressArr.map(({ value }) => value).join(', '),
 					shortTitle: addressArr[addressArr.length - 1].value,
 					coords: {
 						lng: geometry.geometries[0].coordinates[0],
@@ -37,7 +38,7 @@ class Geo {
 		return cities
 	}
 
-	async getAddresByCoords({ lng, lat }: Coordinate) {
+	async getAddresByCoords({ lng, lat }) {
 		const params = Http.toQueryString({
 			lat,
 			lon: lng,
@@ -50,7 +51,7 @@ class Geo {
 		)
 
 		if (response.ok) {
-			const data: GeoResponse = await response.json()
+			const data = await response.json()
 			return data.result.address[0].features[0].properties.display_name
 		} else {
 			store.dispatch(addLog(response.statusText))
@@ -58,7 +59,7 @@ class Geo {
 		}
 	}
 
-	async getCoordsByAddress(q: string) {
+	async getCoordsByAddress(q) {
 		if (!q) return
 
 		const params = Http.toQueryString({
@@ -72,7 +73,7 @@ class Geo {
 			}
 		)
 
-		const data: GeoResponse = await response.json()
+		const data = await response.json()
 		return this.getCitiesFromRespons(data)
 	}
 }

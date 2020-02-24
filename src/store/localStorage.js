@@ -13,7 +13,5 @@ export const getLocalState = () => {
 }
 
 export const setLocalState = state => {
-	console.log('savestate')
-
 	localStorage.setItem(key, JSON.stringify(state))
 }

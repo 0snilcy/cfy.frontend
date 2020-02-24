@@ -2,20 +2,12 @@ import React, { Component } from 'react'
 import './style.sass'
 
 import Map from 'components/shared/Map'
-import Geo from 'services/geo/geo.service'
+import Geo from 'services/geo.service'
 import { connect } from 'react-redux'
 import { getCity } from 'store/selectors'
 import PropTypes from 'prop-types'
 
 class EventsPage extends Component {
-	constructor(props) {
-		super(props)
-	}
-
-	componentDidMount() {}
-
-	componentWillUnmount() {}
-
 	async checkGeo(coords) {
 		const place = await Geo.getAddresByCoords(coords)
 		this.setState({

@@ -9,6 +9,10 @@ class Map extends React.Component {
 	mapRef = React.createRef()
 
 	componentDidUpdate() {
+		this.setPosition()
+	}
+
+	setPosition() {
 		this.map.panTo([this.props.lat, this.props.lng])
 	}
 
@@ -16,6 +20,7 @@ class Map extends React.Component {
 		this.map = DG.map(this.mapRef.current, {
 			zoom: 13,
 		})
+		this.setPosition()
 	}
 
 	render() {

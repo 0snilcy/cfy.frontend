@@ -1,42 +1,64 @@
-import React, { Component } from 'react'
-import { Link } from 'react-router-dom'
+import React from 'react'
+import { Link, Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import './style.sass'
 import { connect } from 'react-redux'
-import { getCity } from 'store/selectors'
 import { changeModal } from 'store/actions'
-import { name as modalName } from 'helpers/Modals/changeCity'
+import { changeCity } from 'helpers/Modals'
+import { useQuery } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
+import api from 'api'
 
-class Navbar extends Component {
-	render() {
-		const routes = this.props.list.map((route, i) => {
-			return (
-				<li key={i}>
-					{route === '/' ? (
-						<Link to={route}>Index</Link>
-					) : (
-						<Link to={route}>{route[0].toUpperCase() + route.slice(1)}</Link>
-					)}
-				</li>
-			)
-		})
+// const GET_USER = gql`
+// 	query getUserData {
+// 		profile {
+// 			name
+// 		}
+// 	}
+// `
 
-		return (
-			<header className="navbar">
-				<div className="navbar__menu">
-					<ul>{routes}</ul>
-					<button
-						type="button"
-						className="navbar__city"
-						onClick={() => this.props.changeModal(modalName)}
-					>
-						{this.props.city.title}
-					</button>
-				</div>
-			</header>
-		)
-	}
+const Navbar = props => {
+	// const { error, loading, data } = useQuery(GET_USER)
+
+	const routes = list =>
+		list
+			.filter(el => el)
+			.map((route, i) => {
+				return (
+					<li key={i}>
+						{route === 'index' ? (
+							<Link to="/">Index</Link>
+						) : (
+							<Link to={'/' + route}>
+								{route[0].toUpperCase() + route.slice(1)}
+							</Link>
+						)}
+					</li>
+				)
+			})
+
+	return (
+		<header className="navbar">
+			<div className="navbar__menu">
+				<ul className="navbar__list">{routes(props.list)}</ul>
+				{props.isAuth ? (
+					<Link to="/" onClick={api.logout}>
+						Logout
+					</Link>
+				) : (
+					<Link to="/auth">Login</Link>
+				)}
+				<button
+					type="button"
+					className="navbar__city"
+					onClick={() => props.changeModal(changeCity.name)}
+				>
+					{props.city.title}
+				</button>
+			</div>
+		</header>
+	)
 }
 
 Navbar.propTypes = {
@@ -44,10 +66,14 @@ Navbar.propTypes = {
 	city: PropTypes.shape({
 		title: PropTypes.string,
 	}),
+	isAuth: PropTypes.bool,
 	changeModal: PropTypes.func,
 }
 
-const mapStateToProps = state => ({ city: getCity(state) })
+const mapStateToProps = state => ({
+	city: state.city,
+	isAuth: !!state.isAuth,
+})
 
 export default connect(mapStateToProps, {
 	changeModal,

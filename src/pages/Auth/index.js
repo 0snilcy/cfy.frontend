@@ -1,45 +1,15 @@
 import React, { useState } from 'react'
-import { useHttp } from './http.hook'
+import api from 'api'
+import { useHistory, useLocation } from 'react-router-dom'
 
-export function Auth() {
-	const http = useHttp()
+const Auth = () => {
 	const [data, setData] = useState({
-		email: 'test@test.com',
-		password: 12345,
+		email: '0.snilcy@gmail.com',
+		password: 'test',
 	})
 
-	async function onProfile() {
-		try {
-			const response = await http.request('/auth/verify', 'POST', {
-				...data,
-			})
-			console.log(response)
-		} catch (err) {
-			console.log(err)
-		}
-	}
-
-	async function onSignIn() {
-		try {
-			const response = await http.request('/auth/signin', 'POST', {
-				...data,
-			})
-			console.log(response)
-		} catch (err) {
-			console.log(err)
-		}
-	}
-
-	async function onSignUp() {
-		try {
-			const response = await http.request('/auth/signup', 'POST', {
-				...data,
-			})
-			console.log(response)
-		} catch (err) {
-			console.log(err)
-		}
-	}
+	const location = useLocation()
+	const history = useHistory()
 
 	const onInput = ({ target }) => {
 		setData({
@@ -78,16 +48,25 @@ export function Auth() {
 						/>
 					</label>
 				</div>
-				<button type="button" onClick={onSignIn}>
+				<button
+					type="button"
+					onClick={async () => {
+						await api.login(data)
+						let { from } = location.state || { from: { pathname: '/' } }
+						history.replace(from)
+					}}
+				>
 					Войти
 				</button>
-				<button type="button" onClick={onSignUp}>
+				<button type="button" onClick={console.log}>
 					Зарегистрироваться
 				</button>
-				<button type="button" onClick={onProfile}>
+				<button type="button" onClick={console.log}>
 					Профиль
 				</button>
 			</form>
 		</section>
 	)
 }
+
+export default Auth

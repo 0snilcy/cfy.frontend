@@ -4,18 +4,13 @@
 		"browser": true,
 		"es6": true
 	},
-	"extends": [
-		"plugin:@typescript-eslint/eslint-recommended",
-		"plugin:@typescript-eslint/recommended",
-		"plugin:react/recommended",
-		"prettier/@typescript-eslint"
-	],
-	"plugins": ["prettier", "@typescript-eslint"],
+	"extends": ["eslint:recommended", "plugin:react/recommended"],
+	"plugins": ["prettier"],
 	"globals": {
 		"Atomics": "readonly",
 		"SharedArrayBuffer": "readonly"
 	},
-	"parser": "@typescript-eslint/parser",
+	"parser": "babel-eslint",
 	"parserOptions": {
 		"ecmaVersion": 8,
 		"sourceType": "module",
@@ -35,7 +30,9 @@
 			{
 				"functions": "never",
 				"objects": "only-multiline",
-				"arrays": "only-multiline"
+				"arrays": "only-multiline",
+				"imports": "only-multiline",
+				"exports": "only-multiline"
 			}
 		],
 		"no-trailing-spaces": "off",
@@ -53,7 +50,7 @@
 				"argsIgnorePattern": "^_"
 			}
 		],
-		"@typescript-eslint/no-explicit-any": ["error", false]
+		"no-duplicate-imports": "error"
 	},
 	"settings": {
 		"react": {

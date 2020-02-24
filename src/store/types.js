@@ -3,4 +3,5 @@ export default {
 	CHANGE_MODAL: 'CHANGE_MODAL',
 	ADD_LOG: 'ADD_LOG',
 	REMOVE_LOG: 'REMOVE_LOG',
+	SET_AUTH: 'SET_AUTH',
 }

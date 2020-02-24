@@ -7,12 +7,17 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from 'store/index'
 
+import api from 'api'
+import { ApolloProvider } from '@apollo/react-hooks'
+
 ReactDOM.render(
-	<Provider store={store}>
-		<BrowserRouter>
-			<App />
-		</BrowserRouter>
-	</Provider>,
+	<ApolloProvider client={api.client}>
+		<Provider store={store}>
+			<BrowserRouter>
+				<App />
+			</BrowserRouter>
+		</Provider>
+	</ApolloProvider>,
 	document.getElementById('root')
 )
 

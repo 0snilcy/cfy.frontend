@@ -35,6 +35,12 @@ export const reducers = (state = {}, action) => {
 				logs: state.logs.filter(({ id }) => id !== action.id),
 			}
 
+		case Actions.SET_AUTH:
+			return {
+				...state,
+				isAuth: action.token,
+			}
+
 		default:
 			return state
 	}

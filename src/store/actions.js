@@ -37,3 +37,10 @@ export const removeLog = id => {
 		id,
 	}
 }
+
+export const setAuth = token => {
+	return {
+		type: Action.SET_AUTH,
+		token,
+	}
+}
