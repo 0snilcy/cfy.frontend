@@ -12,13 +12,15 @@ const GET_USER = gql`
 `
 
 export const Profile = () => {
-	const { data, loading, error } = useQuery(GET_USER)
+	const { data, loading, error, networkStatus } = useQuery(GET_USER)
 
 	return (
 		<section>
 			<h1>Profile page!</h1>
 			<div>Error: {error?.message}</div>
-			<div>Data: {data}</div>
+			<div>networkStatus: {networkStatus}</div>
+			<div>Loading: {loading + ''}</div>
+			<div>Data: {data?.profile}</div>
 		</section>
 	)
 }

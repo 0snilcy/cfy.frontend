@@ -1,7 +1,8 @@
-import ApolloClient from 'apollo-boost'
 import { store } from 'store'
 import { addLog, setAuth } from 'store/actions'
+
 import gql from 'graphql-tag'
+import ApolloClient from 'apollo-boost'
 
 const LOGIN = gql`
 	query Login($email: String!, $password: String!) {
@@ -20,11 +21,37 @@ class Api {
 	constructor() {
 		this.client = new ApolloClient({
 			uri: ENDPOINT.Api,
-			headers: {
-				Authorization: `Bearer ${store.getState().isAuth}`,
+			request: operation => {
+				console.log(operation.operationName, operation.variables)
+
+				const token = store.getState().isAuth
+				if (token) {
+					operation.setContext({
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+					})
+				}
 			},
-			request(operation) {
-				console.log('Operation ' + operation.operationName, operation.variables)
+			onError: error => {
+				console.log(error)
+
+				const { networkError, operation, forward } = error
+				if (networkError?.statusCode === 401) {
+					const { token } = networkError.result
+					if (token) {
+						store.dispatch(setAuth(token))
+						operation.setContext({
+							headers: {
+								...operation.headers,
+								Authorization: `Bearer ${token}`,
+							},
+						})
+						return forward(operation)
+					}
+
+					this.logout()
+				}
 			},
 		})
 	}
@@ -63,6 +90,7 @@ class Api {
 
 	logout = () => {
 		store.dispatch(setAuth(false))
+		this.client.resetStore()
 	}
 }
 
