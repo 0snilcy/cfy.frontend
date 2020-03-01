@@ -10,16 +10,18 @@ import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import api from 'api'
 
-// const GET_USER = gql`
-// 	query getUserData {
-// 		profile {
-// 			name
-// 		}
-// 	}
-// `
+const GET_USER = gql`
+	{
+		user {
+			me {
+				name
+			}
+		}
+	}
+`
 
 const Navbar = props => {
-	// const { error, loading, data } = useQuery(GET_USER)
+	const { error, loading, data } = useQuery(GET_USER)
 
 	const routes = list =>
 		list
@@ -42,6 +44,7 @@ const Navbar = props => {
 		<header className="navbar">
 			<div className="navbar__menu">
 				<ul className="navbar__list">{routes(props.list)}</ul>
+				{data && data.user.me.name}
 				{props.isAuth ? (
 					<Link to="/" onClick={api.logout}>
 						Logout

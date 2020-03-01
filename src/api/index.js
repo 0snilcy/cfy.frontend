@@ -5,24 +5,22 @@ import gql from 'graphql-tag'
 import ApolloClient from 'apollo-boost'
 
 const LOGIN = gql`
-	query Login($email: String!, $password: String!) {
-		login(data: { email: $email, password: $password }) {
-			token
+	mutation Login($email: String!, $password: String!) {
+		auth {
+			login(email: $email, password: $password) {
+				token
+			}
 		}
 	}
 `
 
-const ENDPOINT = {
-	Auth: '/auth',
-	Api: '/api',
-}
-
 class Api {
 	constructor() {
 		this.client = new ApolloClient({
-			uri: ENDPOINT.Api,
+			uri: '/api',
 			request: operation => {
 				console.log(operation.operationName, operation.variables)
+				console.log(operation)
 
 				const token = store.getState().isAuth
 				if (token) {
@@ -56,36 +54,35 @@ class Api {
 		})
 	}
 
-	query = async (query, data, config) => {
+	mutate = async (mutation, data, config) => {
 		try {
-			const response = await this.client.query({
-				query,
+			const response = await this.client.mutate({
+				mutation,
 				variables: data,
 				...config,
 			})
 			return response.data
 		} catch (err) {
+			console.log(err)
+
 			if (err.networkError) {
 				return store.dispatch(addLog(err.networkError.message))
 			}
 
-			err.graphQLErrors.forEach(({ message }) => {
-				store.dispatch(addLog(message))
-			})
+			if (err.graphQLErrors) {
+				err.graphQLErrors.forEach(({ message }) => {
+					store.dispatch(addLog(message))
+				})
+			}
 		}
 	}
 
 	login = async data => {
-		const { login } = await api.query(LOGIN, data, {
-			context: {
-				uri: ENDPOINT.Auth,
-			},
-		})
-		if (!login?.token) {
-			return
-		}
+		const response = await api.mutate(LOGIN, data)
 
-		store.dispatch(setAuth(login.token))
+		if (response?.auth?.login?.token) {
+			store.dispatch(setAuth(response.auth.login.token))
+		}
 	}
 
 	logout = () => {

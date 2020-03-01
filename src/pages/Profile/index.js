@@ -3,10 +3,12 @@ import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 
 const GET_USER = gql`
-	query getProfile {
-		profile {
-			email
-			name
+	{
+		user {
+			me {
+				email
+				name
+			}
 		}
 	}
 `
@@ -20,7 +22,7 @@ export const Profile = () => {
 			<div>Error: {error?.message}</div>
 			<div>networkStatus: {networkStatus}</div>
 			<div>Loading: {loading + ''}</div>
-			<div>Data: {data?.profile}</div>
+			<div>Data: {JSON.stringify(data?.user?.me)}</div>
 		</section>
 	)
 }
