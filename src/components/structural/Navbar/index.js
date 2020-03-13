@@ -1,28 +1,15 @@
 import React from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import './style.sass'
 import { connect } from 'react-redux'
 import { changeModal } from 'store/actions'
 import { changeCity } from 'helpers/Modals'
-import { useQuery } from '@apollo/react-hooks'
-import { gql } from 'apollo-boost'
 import api from 'api'
-
-const GET_USER = gql`
-	{
-		user {
-			me {
-				name
-			}
-		}
-	}
-`
+import User from 'components/shared/User'
 
 const Navbar = props => {
-	const { error, loading, data } = useQuery(GET_USER)
-
 	const routes = list =>
 		list
 			.filter(el => el)
@@ -44,11 +31,14 @@ const Navbar = props => {
 		<header className="navbar">
 			<div className="navbar__menu">
 				<ul className="navbar__list">{routes(props.list)}</ul>
-				{data && data.user.me.name}
+
 				{props.isAuth ? (
-					<Link to="/" onClick={api.logout}>
-						Logout
-					</Link>
+					<>
+						<User name email />
+						<Link to="/" onClick={api.logout}>
+							Logout
+						</Link>
+					</>
 				) : (
 					<Link to="/auth">Login</Link>
 				)}

@@ -1,9 +1,21 @@
 import React, { useState } from 'react'
-import api from 'api'
+// import api from 'api'
 import { useHistory, useLocation } from 'react-router-dom'
+import { withApollo, useMutation } from 'react-apollo'
+import gql from 'graphql-tag'
+
+const LOGIN = gql`
+	mutation Login($email: String!, $password: String!) {
+		auth {
+			login(email: $email, password: $password) {
+				token
+			}
+		}
+	}
+`
 
 const Auth = () => {
-	const [data, setData] = useState({
+	const [user, setUser] = useState({
 		email: '0.snilcy@gmail.com',
 		password: 'test',
 	})
@@ -12,11 +24,21 @@ const Auth = () => {
 	const history = useHistory()
 
 	const onInput = ({ target }) => {
-		setData({
-			...data,
+		setUser({
+			...user,
 			[target.name]: target.value,
 		})
 	}
+
+	const [login] = useMutation(LOGIN, {
+		update(cache, { data }) {
+			cache.writeData({
+				data: {
+					token: data.auth.login.token,
+				},
+			})
+		},
+	})
 
 	return (
 		<section>
@@ -30,7 +52,7 @@ const Auth = () => {
 							name="email"
 							autoComplete="username"
 							onChange={onInput}
-							value={data.email}
+							value={user.email}
 							required
 						/>
 					</label>
@@ -43,15 +65,18 @@ const Auth = () => {
 							name="password"
 							autoComplete="current-password"
 							onChange={onInput}
-							value={data.password}
+							value={user.password}
 							required
 						/>
 					</label>
 				</div>
 				<button
 					type="button"
-					onClick={async () => {
-						await api.login(data)
+					onClick={() => {
+						login({
+							variables: user,
+						})
+						return
 						let { from } = location.state || { from: { pathname: '/' } }
 						history.replace(from)
 					}}
@@ -69,4 +94,4 @@ const Auth = () => {
 	)
 }
 
-export default Auth
+export default withApollo(Auth)

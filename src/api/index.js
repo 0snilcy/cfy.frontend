@@ -1,15 +1,13 @@
 import { store } from 'store'
-import { addLog, setAuth } from 'store/actions'
+import expiredError from './expired.error'
+import unauthError from './unauth.error'
 
-import gql from 'graphql-tag'
-import ApolloClient from 'apollo-boost'
+import { ApolloClient, gql } from '@apollo/client'
 
-const LOGIN = gql`
-	mutation Login($email: String!, $password: String!) {
-		auth {
-			login(email: $email, password: $password) {
-				token
-			}
+const LOGOUT = gql`
+	mutation Logout {
+		user {
+			logout
 		}
 	}
 `
@@ -19,8 +17,11 @@ class Api {
 		this.client = new ApolloClient({
 			uri: '/api',
 			request: operation => {
-				console.log(operation.operationName, operation.variables)
-				console.log(operation)
+				console.log(
+					'ApolloRequst > ',
+					operation.operationName,
+					operation.variables
+				)
 
 				const token = store.getState().isAuth
 				if (token) {
@@ -32,65 +33,29 @@ class Api {
 				}
 			},
 			onError: error => {
-				console.log(error)
+				const { graphQLErrors } = error
 
-				const { networkError, operation, forward } = error
-				if (networkError?.statusCode === 401) {
-					const { token } = networkError.result
-					if (token) {
-						store.dispatch(setAuth(token))
-						operation.setContext({
-							headers: {
-								...operation.headers,
-								Authorization: `Bearer ${token}`,
-							},
-						})
-						return forward(operation)
+				if (graphQLErrors) {
+					for (let gqlErr of graphQLErrors) {
+						switch (gqlErr.extensions.code) {
+							case 'EXPIRED_TOKEN':
+								return expiredError.call(this, error)
+
+							case 'UNAUTHENTICATED':
+								return unauthError.call(this, error)
+
+							default:
+								console.error(error)
+						}
 					}
-
-					this.logout()
 				}
+
+				throw error
 			},
 		})
 	}
-
-	mutate = async (mutation, data, config) => {
-		try {
-			const response = await this.client.mutate({
-				mutation,
-				variables: data,
-				...config,
-			})
-			return response.data
-		} catch (err) {
-			console.log(err)
-
-			if (err.networkError) {
-				return store.dispatch(addLog(err.networkError.message))
-			}
-
-			if (err.graphQLErrors) {
-				err.graphQLErrors.forEach(({ message }) => {
-					store.dispatch(addLog(message))
-				})
-			}
-		}
-	}
-
-	login = async data => {
-		const response = await api.mutate(LOGIN, data)
-
-		if (response?.auth?.login?.token) {
-			store.dispatch(setAuth(response.auth.login.token))
-		}
-	}
-
-	logout = () => {
-		store.dispatch(setAuth(false))
-		this.client.resetStore()
-	}
 }
 
-const api = new Api()
+const client = new ApolloClient({})
 
-export default api
+export default client

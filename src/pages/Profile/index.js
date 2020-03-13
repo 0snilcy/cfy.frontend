@@ -3,7 +3,7 @@ import gql from 'graphql-tag'
 import { useQuery } from '@apollo/react-hooks'
 
 const GET_USER = gql`
-	{
+	query ProfileGetUser {
 		user {
 			me {
 				email
