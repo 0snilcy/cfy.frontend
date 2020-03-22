@@ -1,17 +1,6 @@
 import React from 'react'
-import gql from 'graphql-tag'
-import { useQuery } from '@apollo/react-hooks'
-
-const GET_USER = gql`
-	query ProfileGetUser {
-		user {
-			me {
-				email
-				name
-			}
-		}
-	}
-`
+import { useQuery } from '@apollo/client'
+import { GET_USER } from 'api/requests/client'
 
 export const Profile = () => {
 	const { data, loading, error, networkStatus } = useQuery(GET_USER)

@@ -1,11 +1,8 @@
-import { store } from 'store'
-import { setAuth } from 'store/actions'
-
 export default function(error) {
 	console.error('UNAUTHENTICATED', error)
 	const { operation, forward } = error
 
-	const token = store.getState().isAuth
+	// const token = store.getState().isAuth
 	const contextToken = operation
 		.getContext()
 		.headers?.Authorization?.split(' ')[1]

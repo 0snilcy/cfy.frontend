@@ -3,8 +3,6 @@ import './style.sass'
 
 import PropTypes from 'prop-types'
 import { Close } from 'icons'
-import { connect } from 'react-redux'
-import { closeModal } from 'store/actions'
 
 function Modal(props) {
 	return (
@@ -44,6 +42,4 @@ Modal.propTypes = {
 	closeModal: PropTypes.func,
 }
 
-export default connect(null, {
-	closeModal,
-})(Modal)
+export default Modal

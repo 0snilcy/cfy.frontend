@@ -1,18 +1,8 @@
 import React, { useState } from 'react'
-// import api from 'api'
 import { useHistory, useLocation } from 'react-router-dom'
-import { withApollo, useMutation } from 'react-apollo'
-import gql from 'graphql-tag'
-
-const LOGIN = gql`
-	mutation Login($email: String!, $password: String!) {
-		auth {
-			login(email: $email, password: $password) {
-				token
-			}
-		}
-	}
-`
+import { useMutation } from '@apollo/client'
+import { GET_TOKEN, GET_USER } from 'api/requests/client'
+import { LOGIN } from 'api/requests/auth'
 
 const Auth = () => {
 	const [user, setUser] = useState({
@@ -31,12 +21,28 @@ const Auth = () => {
 	}
 
 	const [login] = useMutation(LOGIN, {
+		onError: () => ({}),
 		update(cache, { data }) {
-			cache.writeData({
+			data = data.auth.login
+
+			if (!data) return
+
+			cache.writeQuery({
+				query: GET_TOKEN,
 				data: {
-					token: data.auth.login.token,
+					token: data.token,
 				},
 			})
+
+			cache.writeQuery({
+				query: GET_USER,
+				data: {
+					user: { me: data.user },
+				},
+			})
+
+			let { from } = location.state || { from: { pathname: '/' } }
+			history.replace(from)
 		},
 	})
 
@@ -76,9 +82,6 @@ const Auth = () => {
 						login({
 							variables: user,
 						})
-						return
-						let { from } = location.state || { from: { pathname: '/' } }
-						history.replace(from)
 					}}
 				>
 					Войти
@@ -94,4 +97,4 @@ const Auth = () => {
 	)
 }
 
-export default withApollo(Auth)
+export default Auth

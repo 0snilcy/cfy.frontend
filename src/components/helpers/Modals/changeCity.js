@@ -1,11 +1,8 @@
 import React, { useState } from 'react'
 import Modal from '../Modal'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { getCity } from 'store/selectors'
-import { closeModal, changeCity } from 'store/actions'
 import Geo from 'services/geo.service'
-import { debounce } from 'utils/index'
+import { debounce } from 'utils'
 
 const getLocationData = debounce(Geo.getCoordsByAddress, 300, Geo)
 
@@ -75,9 +72,4 @@ ChangeCityModal.propTypes = {
 	closeModal: PropTypes.func,
 }
 
-const mapStateToProps = state => ({ city: getCity(state) })
-
-export default connect(mapStateToProps, {
-	closeModal,
-	changeCity,
-})(ChangeCityModal)
+export default ChangeCityModal

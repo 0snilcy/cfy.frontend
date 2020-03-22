@@ -1,25 +1,32 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import Auth from 'pages/Auth'
-import { Profile } from './pages/Profile'
+import { Profile } from 'pages/Profile'
 import Navbar from 'components/structural/Navbar'
 import EventsPage from 'pages/Events'
-import { changeCity } from 'helpers/Modals'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import Logger from 'helpers/Logger'
-import PrivateRoute from 'helpers/PrivateRoute'
+// import { changeCity } from 'helpers/Modals'
+import Logger from 'components/helpers/Logger'
+import PrivateRoute from 'components/helpers/PrivateRoute'
 
-function App({ modal, logs = [], isAuth }) {
+import { useQuery } from '@apollo/client'
+import { GET_TOKEN } from 'api/requests/client'
+
+function App() {
+	const { data } = useQuery(GET_TOKEN)
+	const isAuth = !!data?.token
+
 	return (
 		<div className="App">
-			<Navbar list={['index', 'events', 'profile']} />
+			<Navbar list={['index', 'events', 'profile']} isAuth={isAuth} />
 			<main>
 				<Switch>
 					<Route exact path="/">
 						<h1>Hello, world!</h1>
 					</Route>
 					<Route path="/auth">{isAuth ? <Redirect to="/" /> : <Auth />}</Route>
+					<Route path="/auth">
+						<Auth />
+					</Route>
 					<Route path="/events" component={EventsPage} />
 
 					<PrivateRoute path="/profile">
@@ -30,20 +37,10 @@ function App({ modal, logs = [], isAuth }) {
 				</Switch>
 			</main>
 			<footer />
-			{modal === changeCity.name && <changeCity.component />}
-			{!!logs.length && <Logger logs={logs} />}
+			{/* {modal === changeCity.name && <changeCity.component />} */}
+			<Logger />
 		</div>
 	)
 }
 
-App.propTypes = {
-	modal: PropTypes.string,
-	logs: PropTypes.array,
-	isAuth: PropTypes.bool,
-}
-
-export default connect(state => ({
-	modal: state.modal,
-	logs: state.logs,
-	isAuth: !!state.isAuth,
-}))(App)
+export default App

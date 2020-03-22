@@ -1,6 +1,3 @@
-import { store } from 'store'
-import { setAuth } from 'store/actions'
-
 export default function(error) {
 	console.warn('EXPIRED_TOKEN', error)
 	const { graphQLErrors, operation, forward } = error

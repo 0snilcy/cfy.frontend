@@ -4,19 +4,15 @@ import 'scss/style.sass'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import { store } from 'store/index'
 
-import api from 'api'
-import { ApolloProvider } from '@apollo/react-hooks'
+import apiClient from 'api'
+import { ApolloProvider } from '@apollo/client'
 
 ReactDOM.render(
-	<ApolloProvider client={api.client}>
-		<Provider store={store}>
-			<BrowserRouter>
-				<App />
-			</BrowserRouter>
-		</Provider>
+	<ApolloProvider client={apiClient}>
+		<BrowserRouter>
+			<App />
+		</BrowserRouter>
 	</ApolloProvider>,
 	document.getElementById('root')
 )

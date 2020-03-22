@@ -3,8 +3,6 @@ import './style.sass'
 
 import Map from 'components/shared/Map'
 import Geo from 'services/geo.service'
-import { connect } from 'react-redux'
-import { getCity } from 'store/selectors'
 import PropTypes from 'prop-types'
 
 class EventsPage extends Component {
@@ -34,6 +32,4 @@ EventsPage.propTypes = {
 	}),
 }
 
-export default connect(state => ({
-	city: getCity(state),
-}))(EventsPage)
+export default EventsPage

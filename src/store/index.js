@@ -1,7 +1,9 @@
-import { createStore } from 'redux'
-import { reducers } from './reducers'
-import { setLocalState, getLocalState } from './localStorage'
-import { debounce } from 'utils/index'
+// import { createStore } from 'redux'
+// import { reducers } from './reducers'
+// import { setLocalState, getLocalState } from './localStorage'
+// import { debounce } from 'utils/index'
+
+console.log('store')
 
 export const store = createStore(
 	reducers,
@@ -15,8 +17,8 @@ export const store = createStore(
 				lng: 37.617726,
 			},
 		},
-	},
-	window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+	}
+	// window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 )
 
-store.subscribe(debounce(() => setLocalState(store.getState()), 500))
+// store.subscribe(debounce(() => setLocalState(store.getState()), 500))

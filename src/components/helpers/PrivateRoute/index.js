@@ -1,9 +1,14 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-const PrivateRoute = ({ children, isAuth, ...rest }) => {
+import { useQuery } from '@apollo/client'
+import { GET_TOKEN } from 'api/requests/client'
+
+const PrivateRoute = ({ children, ...rest }) => {
+	const { data } = useQuery(GET_TOKEN)
+	const isAuth = !!data?.token
+
 	return (
 		<Route
 			{...rest}
@@ -25,9 +30,6 @@ const PrivateRoute = ({ children, isAuth, ...rest }) => {
 
 PrivateRoute.propTypes = {
 	children: PropTypes.element,
-	isAuth: PropTypes.bool,
 }
 
-export default connect(state => ({
-	isAuth: !!state.isAuth,
-}))(PrivateRoute)
+export default PrivateRoute

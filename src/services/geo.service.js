@@ -1,6 +1,4 @@
 import Http from 'services/http.service'
-import { store } from 'store/index'
-import { addLog } from 'store/actions'
 
 const PointType = {
 	Place: 'place',
@@ -54,7 +52,6 @@ class Geo {
 			const data = await response.json()
 			return data.result.address[0].features[0].properties.display_name
 		} else {
-			store.dispatch(addLog(response.statusText))
 			console.log(response.status, response.statusText)
 		}
 	}

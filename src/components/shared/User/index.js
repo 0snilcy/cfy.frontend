@@ -1,25 +1,14 @@
 import React from 'react'
-import { gql } from 'apollo-boost'
-import { useQuery } from '@apollo/react-hooks'
-
-const GET_USER = gql`
-	query NavbarGetUser {
-		user {
-			me {
-				name
-				email
-			}
-		}
-	}
-`
+import { GET_USER } from 'api/requests/client'
+import { useQuery } from '@apollo/client'
 
 const User = () => {
-	const { data } = useQuery(GET_USER)
+	const { data } = useQuery(GET_USER, {
+		fetchPolicy: 'cache-only',
+	})
 
-	const user = data?.user?.me
-	if (!user) {
-		return <span></span>
-	}
+	const user = data?.user.me
+	if (!user) return null
 
 	return <div>{user.name || user.email}</div>
 }

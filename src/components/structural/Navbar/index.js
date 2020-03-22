@@ -1,15 +1,36 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import './style.sass'
-import { connect } from 'react-redux'
-import { changeModal } from 'store/actions'
-import { changeCity } from 'helpers/Modals'
-import api from 'api'
+// import { changeCity } from 'helpers/Modals'
 import User from 'components/shared/User'
 
+import { useMutation, useApolloClient } from '@apollo/client'
+import { LOGOUT } from 'api/requests/auth'
+
 const Navbar = props => {
+	const client = useApolloClient()
+	const history = useHistory()
+
+	const [logout] = useMutation(LOGOUT, {
+		update(
+			cache,
+			{
+				data: {
+					user: { logout },
+				},
+			}
+		) {
+			if (logout) {
+				client.resetStore()
+				history.replace({
+					pathname: '/',
+				})
+			}
+		},
+	})
+
 	const routes = list =>
 		list
 			.filter(el => el)
@@ -31,13 +52,10 @@ const Navbar = props => {
 		<header className="navbar">
 			<div className="navbar__menu">
 				<ul className="navbar__list">{routes(props.list)}</ul>
-
 				{props.isAuth ? (
 					<>
 						<User name email />
-						<Link to="/" onClick={api.logout}>
-							Logout
-						</Link>
+						<button onClick={logout}>Logout</button>
 					</>
 				) : (
 					<Link to="/auth">Login</Link>
@@ -45,9 +63,9 @@ const Navbar = props => {
 				<button
 					type="button"
 					className="navbar__city"
-					onClick={() => props.changeModal(changeCity.name)}
+					// onClick={() => props.changeModal(changeCity.name)}
 				>
-					{props.city.title}
+					{/* {props.city.title} */}
 				</button>
 			</div>
 		</header>
@@ -56,18 +74,7 @@ const Navbar = props => {
 
 Navbar.propTypes = {
 	list: PropTypes.arrayOf(PropTypes.string),
-	city: PropTypes.shape({
-		title: PropTypes.string,
-	}),
 	isAuth: PropTypes.bool,
-	changeModal: PropTypes.func,
 }
 
-const mapStateToProps = state => ({
-	city: state.city,
-	isAuth: !!state.isAuth,
-})
-
-export default connect(mapStateToProps, {
-	changeModal,
-})(Navbar)
+export default Navbar
