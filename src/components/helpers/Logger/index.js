@@ -3,9 +3,9 @@ import './style.sass'
 import PropTypes from 'prop-types'
 import { Close } from 'icons'
 
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/react-hooks'
 import { GET_LOGS } from 'api/requests/client'
-import client from 'api'
+import { client } from 'api'
 import uuid from 'uuid/v4'
 
 export const addLog = message => {

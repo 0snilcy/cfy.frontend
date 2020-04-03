@@ -1,19 +1,40 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import 'scss/style.sass'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 import { BrowserRouter } from 'react-router-dom'
 
-import apiClient from 'api'
-import { ApolloProvider } from '@apollo/client'
+import { ApolloProvider } from '@apollo/react-hooks'
+import { init as initClient } from 'api'
+
+const AppContainer = () => {
+	const [client, setClient] = useState(undefined)
+	useEffect(() => {
+		const init = async () => {
+			const initedClient = await initClient()
+			setClient(initedClient)
+		}
+		init()
+
+		return () => {
+			console.log('return from effect')
+		}
+	}, [])
+
+	if (!client) return <div>Loading...</div>
+
+	return (
+		<ApolloProvider client={client}>
+			<App />
+		</ApolloProvider>
+	)
+}
 
 ReactDOM.render(
-	<ApolloProvider client={apiClient}>
-		<BrowserRouter>
-			<App />
-		</BrowserRouter>
-	</ApolloProvider>,
+	<BrowserRouter>
+		<AppContainer />
+	</BrowserRouter>,
 	document.getElementById('root')
 )
 

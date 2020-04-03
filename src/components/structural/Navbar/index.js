@@ -6,7 +6,7 @@ import './style.sass'
 // import { changeCity } from 'helpers/Modals'
 import User from 'components/shared/User'
 
-import { useMutation, useApolloClient } from '@apollo/client'
+import { useMutation, useApolloClient } from '@apollo/react-hooks'
 import { LOGOUT } from 'api/requests/auth'
 
 const Navbar = props => {

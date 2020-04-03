@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
-import { useMutation } from '@apollo/client'
-import { GET_TOKEN, GET_USER } from 'api/requests/client'
+import { useMutation } from '@apollo/react-hooks'
+import { GET_TOKEN, GET_USER, GET_AUTH } from 'api/requests/client'
 import { LOGIN } from 'api/requests/auth'
 
 const Auth = () => {
@@ -21,23 +21,22 @@ const Auth = () => {
 	}
 
 	const [login] = useMutation(LOGIN, {
-		onError: () => ({}),
 		update(cache, { data }) {
 			data = data.auth.login
 
 			if (!data) return
 
-			cache.writeQuery({
-				query: GET_TOKEN,
+			// cache.writeQuery({
+			// 	query: GET_USER,
+			// 	data: {
+			// 		user: { me: data.user },
+			// 	},
+			// })
+
+			cache.writeData({
 				data: {
 					token: data.token,
-				},
-			})
-
-			cache.writeQuery({
-				query: GET_USER,
-				data: {
-					user: { me: data.user },
+					isAuth: !!data.token,
 				},
 			})
 

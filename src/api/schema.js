@@ -1,19 +1,15 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql'
+import gql from 'graphql-tag'
 
-const schema = {
-	query: new GraphQLObjectType({
-		name: 'RootQuery',
-		fields: {
-			test: {
-				type: GraphQLString,
-				resolve() {
-					console.log(arguments)
+export const typeDefs = gql`
+	extend type Query {
+		isAuth: Boolean!
+	}
+`
 
-					return true
-				},
-			},
+export const resolvers = {
+	Query: {
+		isAuth() {
+			console.log('isauth', arguments)
 		},
-	}),
+	},
 }
-
-export default schema

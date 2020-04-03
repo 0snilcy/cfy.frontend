@@ -1,113 +1,79 @@
 // import expiredError from './errors/expired.error'
 // import unauthError from './errors/unauth.error'
 
-import {
-	ApolloClient,
-	InMemoryCache,
-	HttpLink,
-	ApolloLink,
-	from,
-	gql,
-} from '@apollo/client'
-
+import gql from 'graphql-tag'
+import { ApolloClient } from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { HttpLink } from 'apollo-link-http'
 import { onError } from 'apollo-link-error'
-import { GET_TOKEN } from './requests/client'
-import schema from './schema'
-import { addLog } from 'components/helpers/Logger'
+import { from } from 'apollo-link'
+import { persistCache } from 'apollo-cache-persist'
+
+import { typeDefs, resolvers } from './schema'
+
+import auth from './links/auth'
+import error from './links/error'
+import logger from './links/logger'
 
 const cache = new InMemoryCache()
+const cacheKey = 'apollo-cache'
 
 const writeInitialStore = () => {
 	cache.writeQuery({
 		query: gql`
 			query {
 				token
+				isAuth
 				logs
 			}
 		`,
 		data: {
 			token: null,
+			isAuth: false,
 			logs: [],
 		},
 	})
 }
 
-writeInitialStore()
-
-const errorHandler = onError(error => {
-	const { graphQLErrors } = error
-
-	if (graphQLErrors) {
-		for (let gqlErr of graphQLErrors) {
-			switch (gqlErr.extensions.code) {
-				case 'EXPIRED_TOKEN':
-					return null // return expiredError(error)
-
-				case 'UNAUTHENTICATED':
-					return null // return unauthError(error)
-
-				default:
-					console.error(error)
-			}
-		}
-	}
-})
-
-const errorLink = onError(error => {
-	const { graphQLErrors, networkError } = error
-
-	if (graphQLErrors) {
-		graphQLErrors.map(({ message, path }) => {
-			console.warn(`GraphQL Error: \nMessage: ${message} \nPath: ${path}`)
-			return addLog(message)
-		})
-	}
-
-	if (networkError) {
-		console.error('GraphQL Network Error:', networkError.response)
-	}
-})
-
-const logger = new ApolloLink((operation, forward) => {
-	console.log(
-		'ApolloRequst Start > ',
-		operation.operationName,
-		operation.variables
-	)
-	return forward(operation)
-})
-
-const auth = new ApolloLink((operation, forward) => {
-	try {
-		const data = cache.readQuery({
-			query: GET_TOKEN,
-		})
-
-		if (data?.token) {
-			operation.setContext({
-				headers: {
-					Authorization: `Bearer ${data.token}`,
-				},
-			})
-		}
-	} catch (err) {
-		console.log(err.message)
-	}
-
-	return forward(operation)
-})
-
 const httpLink = new HttpLink({
 	uri: '/api',
 })
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
 	cache,
-	link: from([errorLink, logger, auth, httpLink]),
-	connectToDevTools: true,
-	schema,
+	link: from([logger, error, auth(cache), httpLink]),
+	// connectToDevTools: true,
+	// typeDefs,
+	resolvers,
+	defaultOptions: {
+		mutate: {
+			errorPolicy: 'ignore',
+		},
+	},
 })
 
 client.onResetStore(writeInitialStore)
 
-export default client
+export const init = async () => {
+	await persistCache({
+		cache,
+		storage: window.localStorage,
+		// debug: true,
+		debounce: 300,
+		key: cacheKey,
+	})
+
+	let store = localStorage.getItem(cacheKey)
+	if (store) {
+		try {
+			store = JSON.parse(store)
+			if (!Object.keys(store).length) {
+				writeInitialStore()
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	return client
+}

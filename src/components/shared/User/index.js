@@ -1,6 +1,6 @@
 import React from 'react'
 import { GET_USER } from 'api/requests/client'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/react-hooks'
 
 const User = () => {
 	const { data } = useQuery(GET_USER, {

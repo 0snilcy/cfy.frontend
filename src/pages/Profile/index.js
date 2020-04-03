@@ -1,5 +1,5 @@
 import React from 'react'
-import { useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/react-hooks'
 import { GET_USER } from 'api/requests/client'
 
 export const Profile = () => {

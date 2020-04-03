@@ -8,12 +8,20 @@ import EventsPage from 'pages/Events'
 import Logger from 'components/helpers/Logger'
 import PrivateRoute from 'components/helpers/PrivateRoute'
 
-import { useQuery } from '@apollo/client'
-import { GET_TOKEN } from 'api/requests/client'
+import { useQuery, useApolloClient } from '@apollo/react-hooks'
+import { GET_AUTH } from 'api/requests/client'
 
 function App() {
-	const { data } = useQuery(GET_TOKEN)
-	const isAuth = !!data?.token
+	const client = useApolloClient()
+	const {
+		data: { isAuth },
+	} = useQuery(GET_AUTH)
+	console.log(isAuth)
+	console.log(
+		client.readQuery({
+			query: GET_AUTH,
+		})
+	)
 
 	return (
 		<div className="App">
