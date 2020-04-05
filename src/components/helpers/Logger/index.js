@@ -3,9 +3,8 @@ import './style.sass'
 import PropTypes from 'prop-types'
 import { Close } from 'icons'
 
-import { useQuery } from '@apollo/react-hooks'
-import { GET_LOGS } from 'api/requests/client'
 import { client } from 'api'
+import { GET_LOGS } from 'api/requests/client'
 import uuid from 'uuid/v4'
 
 export const addLog = message => {
@@ -48,9 +47,9 @@ const LoggerItem = ({ message, id }) => {
 }
 
 const Logger = () => {
-	const {
-		data: { logs },
-	} = useQuery(GET_LOGS)
+	const { logs } = client.readQuery({
+		query: GET_LOGS,
+	})
 
 	return (
 		<section className="logger">

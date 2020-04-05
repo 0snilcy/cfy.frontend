@@ -4,14 +4,14 @@ import { GET_TOKEN } from '../requests/client'
 export default cache => {
 	return new ApolloLink((operation, forward) => {
 		try {
-			const data = cache.readQuery({
+			const { token } = cache.readQuery({
 				query: GET_TOKEN,
 			})
 
-			if (data?.token) {
+			if (token) {
 				operation.setContext({
 					headers: {
-						Authorization: `Bearer ${data.token}`,
+						Authorization: `Bearer ${token}`,
 					},
 				})
 			}

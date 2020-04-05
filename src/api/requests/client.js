@@ -11,21 +11,3 @@ export const GET_LOGS = gql`
 		logs @client
 	}
 `
-
-export const GET_AUTH = gql`
-	query GET_AUTH {
-		isAuth @client
-	}
-`
-
-export const GET_USER = gql`
-	query GET_USER {
-		user {
-			me {
-				email
-				name
-				id
-			}
-		}
-	}
-`

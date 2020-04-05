@@ -1,15 +1,15 @@
-import gql from 'graphql-tag'
+// import { GET_TOKEN } from './requests/client'
 
-export const typeDefs = gql`
-	extend type Query {
-		isAuth: Boolean!
-	}
-`
+// import gql from 'graphql-tag'
+// export const typeDefs = gql``
 
 export const resolvers = {
 	Query: {
-		isAuth() {
-			console.log('isauth', arguments)
+		logs() {
+			console.log('logs resolver')
+		},
+		token() {
+			console.log('logs resolver')
 		},
 	},
 }

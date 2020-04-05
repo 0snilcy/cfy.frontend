@@ -1,34 +1,41 @@
 import { onError } from 'apollo-link-error'
-import { addLog } from 'components/helpers/Logger'
+import { client } from '../index'
+import { forceLogout } from '../auth'
+import { GET_TOKEN } from 'api/requests/client'
 
-const errorHandler = onError(error => {
-	const { graphQLErrors } = error
-
-	if (graphQLErrors) {
-		for (let gqlErr of graphQLErrors) {
-		}
-	}
-})
+// import { addLog } from 'components/helpers/Logger'
 
 export default onError(error => {
-	const { graphQLErrors, networkError } = error
+	const { graphQLErrors, networkError, operation, forward } = error
 	console.log(error)
 
-	if (graphQLErrors) {
-		graphQLErrors.forEach(({ message, path, extensions }) => {
-			console.warn(`GraphQL Error: \nMessage: ${message} \nPath: ${path}`)
-			switch (extensions.code) {
-				case 'EXPIRED_TOKEN':
-					return null // return expiredError(error)
+	for (const {
+		message,
+		extensions: { code, token },
+	} of graphQLErrors) {
+		console.error(`GraphQL Error: ${message}, ${code}`)
+		switch (code) {
+			case 'EXPIRED_TOKEN':
+				client.writeQuery({
+					query: GET_TOKEN,
+					data: { token },
+				})
+				operation.setContext({
+					headers: {
+						...operation.getContext().headers,
+						Authorization: `Bearer ${token}`,
+					},
+				})
+				return forward(operation)
 
-				case 'UNAUTHENTICATED':
-					return null // return unauthError(error)
+			case 'UNAUTHENTICATED':
+				forceLogout()
+				break
 
-				default:
-					console.error(error)
-					addLog(message)
-			}
-		})
+			default:
+				console.warn(`GraphQL Error: \nMessage: ${message}`)
+			// addLog(message)
+		}
 	}
 
 	if (networkError) {

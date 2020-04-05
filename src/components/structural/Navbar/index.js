@@ -1,35 +1,15 @@
 import React from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import './style.sass'
 // import { changeCity } from 'helpers/Modals'
 import User from 'components/shared/User'
-
-import { useMutation, useApolloClient } from '@apollo/react-hooks'
-import { LOGOUT } from 'api/requests/auth'
+import { useLogout, useAuthState } from 'hooks/auth'
 
 const Navbar = props => {
-	const client = useApolloClient()
-	const history = useHistory()
-
-	const [logout] = useMutation(LOGOUT, {
-		update(
-			cache,
-			{
-				data: {
-					user: { logout },
-				},
-			}
-		) {
-			if (logout) {
-				client.resetStore()
-				history.replace({
-					pathname: '/',
-				})
-			}
-		},
-	})
+	const isAuth = useAuthState()
+	const logout = useLogout()
 
 	const routes = list =>
 		list
@@ -52,9 +32,9 @@ const Navbar = props => {
 		<header className="navbar">
 			<div className="navbar__menu">
 				<ul className="navbar__list">{routes(props.list)}</ul>
-				{props.isAuth ? (
+				{isAuth ? (
 					<>
-						<User name email />
+						<User />
 						<button onClick={logout}>Logout</button>
 					</>
 				) : (
@@ -74,7 +54,6 @@ const Navbar = props => {
 
 Navbar.propTypes = {
 	list: PropTypes.arrayOf(PropTypes.string),
-	isAuth: PropTypes.bool,
 }
 
 export default Navbar
