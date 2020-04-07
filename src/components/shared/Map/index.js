@@ -1,29 +1,41 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import {
-	YMaps,
-	Map as YMap,
-	ZoomControl,
-	GeolocationControl,
-	SearchControl,
-} from 'react-yandex-maps'
-
+import { YMaps, Map as YMap } from 'react-yandex-maps'
+import classNames from 'classnames'
 import './style.sass'
+import Loader from 'components/helpers/Loader'
+
+const setZoom = (map, zoom) =>
+	map.setZoom(map.getZoom() + zoom, {
+		duration: 200,
+	})
 
 const Map = ({ lat, lng, zoom }) => {
+	const [isLoad, setLoadState] = useState(true)
+	let map
+
 	return (
-		<section className="map">
+		<section
+			className={classNames('map', {
+				'map--load': isLoad,
+			})}
+		>
+			{isLoad && <Loader />}
 			<YMaps>
 				<YMap
+					onLoad={() => setLoadState(false)}
 					defaultState={{ center: [lat, lng], zoom, controls: [] }}
 					width="100%"
 					height="100%"
-				>
-					<SearchControl />
-					<GeolocationControl options={{ float: 'right' }} />
-					<ZoomControl options={{ size: 'small' }} />
-				</YMap>
+					instanceRef={ref => {
+						if (ref) map = ref
+					}}
+				></YMap>
 			</YMaps>
+			<div className="map__panel">
+				<button onClick={() => setZoom(map, 1)}>Zoom in</button>
+				<button onClick={() => setZoom(map, -1)}>Zoom out</button>
+			</div>
 		</section>
 	)
 }
@@ -35,8 +47,8 @@ Map.propTypes = {
 }
 
 Map.defaultProps = {
-	lng: 37.622546,
-	lat: 55.753235,
+	lng: 37.62249357,
+	lat: 55.75322293,
 	zoom: 12,
 }
 
